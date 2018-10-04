@@ -1,20 +1,18 @@
-t matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from IPython.display import display, Markdown, Latex
 import numpy as np
-import copy
 
 
+
+## DEFINING PARTICLES and LOADING THEIR IMAGES
 
 particles_names = ['u', 'c', 't', 'g',
                    'd', 's', 'b', 'gamma',
                    'nu_e', 'nu_mu', 'nu_tau', 'w',
                    'e', 'mu', 'tau', 'z']
 
-
 src_dir = 'particles/'
-
-
 
 u = mpimg.imread(src_dir + 'u.png')
 c = mpimg.imread(src_dir + 'c.png')
@@ -32,12 +30,6 @@ e = mpimg.imread(src_dir + 'e.png')
 mu = mpimg.imread(src_dir + 'mu.png')
 tau = mpimg.imread(src_dir + 'tau.png')
 z = mpimg.imread(src_dir + 'z.png')
-h = mpimg.imread(src_dir + 'h.png')
-red = mpimg.imread(src_dir + 'red_square.png')
-blue = mpimg.imread(src_dir + 'blue_square.png')
-green = mpimg.imread(src_dir + 'green_square.png')
-yellow = mpimg.imread(src_dir + 'yellow_square.png')
-
 
 
 particles_images = [u, c, t, g,
@@ -45,17 +37,10 @@ particles_images = [u, c, t, g,
                     nu_e, nu_mu, nu_tau, w,
                     e, mu, tau, z]
 
-quarks = [u, c, t, d, b, s]
-leptons = [nu_e, nu_mu, nu_tau, e, mu, tau]
-bosons = [g, gamma, w, z, red, h]
-
-
 
 particles_dic = {}
 for i,p in enumerate(particles_names):
     particles_dic[p] = particles_images[i]
-
-
 
 
 def remove_axes(ax):
@@ -69,56 +54,23 @@ def remove_axes(ax):
     ax.set_yticks([])
 
 
-
-nn = 3
-mm = 6
-fig, axes = plt.subplots(nn, mm, figsize=(18,9))
-for ax in axes.ravel():
+fig, axes = plt.subplots(n,m, figsize=(14,14))
+for ax, p in zip(axes.ravel(), particles_names):
     remove_axes(ax)
     # ax.imshow(particles_dic[p])
-for i, ax in enumerate(axes[0]):
-    ax.imshow(quarks[i])
-for i, ax in enumerate(axes[1]):
-    ax.imshow(leptons[i])
-for i, ax in enumerate(axes[2]):
-    ax.imshow(bosons[i])
+
+fig.savefig("grids/complete.png")
 
 
+for number_grids in range(40):
+    for ax in axes.ravel():
+        ax.set_visible(True)
 
-fig.savefig("grids/complete.png", dpi=200)
-
-
-
-family_names = [quarks, leptons, bosons]
-family_colors = [blue, green, red]
-
-
-
-empty_fig, empty_axes = plt.subplots(nn, mm, figsize=(18, 9))
-for n in range(nn):
-    for m in range(mm):
-        ax = empty_axes[n, m]
-        remove_axes(ax)
-        ax.imshow(family_colors[n])
-
-
-
-number_of_grids = 50
-for grid in range(number_of_grids):
-    nn, mm = empty_axes.shape
-    for n in range(nn):
-        for m in range(mm):
-            ax = empty_axes[n][m]
-            ax.clear()
-            remove_axes(ax)
-            ax.imshow(family_colors[n])
-        i = np.random.randint(0,6)
-        j = i
+    for k in range(m):
+        i = np.random.randint(0,4)
+        j=i
         while j==i:
-            j = np.random.randint(0,6)
-        for k in range(mm):
-            if k!=i and k!=j:
-                empty_axes[n][k].imshow(family_names[n][k])
-
-    # display(empty_fig)
-    empty_fig.savefig("grids/{}.png".format(grid), dpi=100)
+            j = np.random.randint(0,4)
+        axes[k][i].set_visible(False)
+        axes[k][j].set_visible(False)
+    fig.savefig("grids/{}.png".format(number_grids))
